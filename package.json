@@ -1,10 +1,10 @@
 {
-  "name": "battlesnake-node",
-  "description": "A simple BattleSnake AI written in Javascript for NodeJS",
+  "name": "bounty-snake-2020",
+  "description": "The Echosec Bounty Snake for 2020",
   "version": "0.0.0",
   "private": true,
-  "author": "Sendwithus",
-  "repository": "https://github.com/sendwithus/battlesnake-node",
+  "author": "Echosec Dev <dev@echosec.net>",
+  "repository": "https://github.com/echosec/bounty-snake-2020",
   "licenses": [
     {
       "type": "WTFPL",
