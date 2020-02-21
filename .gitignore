@@ -597,3 +597,12 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/osx,vim,node,linux,windows,intellij,visualstudio
+
+### Terraform ###
+# Local .terraform directories
+**/.terraform/*
+**/.terraformrc
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
