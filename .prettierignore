@@ -1,0 +1,7 @@
+makefile
+*.json
+*.html
+*.yml
+*.yaml
+*.example
+**/*.d.ts
