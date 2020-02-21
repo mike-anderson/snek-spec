@@ -39,9 +39,10 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "eslint '**/*.ts'",
-    "prettier": "prettier --check '**/*.ts'",
-    "prettier:write": "prettier --write '**/*.ts'",
+    "lint": "eslint '**/*.{js,json,ts}'",
+    "prettier": "prettier --check '**/*.{js,json,ts}'",
+    "prettier:write": "prettier --write '**/*.{js,json,ts}'",
+    "test": "jest",
     "start": "PORT=5000 nodemon --watch 'src/**/*.ts' --exec 'ts-node' ./src/index.ts"
   }
 }

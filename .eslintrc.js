@@ -2,13 +2,13 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'prettier/@typescript-eslint'
+    'prettier/@typescript-eslint',
   ],
   plugins: ['prettier', 'jest'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 2018,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
     'prettier/prettier': 'error',
@@ -20,7 +20,7 @@ module.exports = {
     'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': [
       'error',
-      { functions: true, classes: true }
+      { functions: true, classes: true },
     ],
 
     /*
@@ -36,10 +36,10 @@ module.exports = {
       {
         vars: 'all',
         args: 'after-used',
-        ignoreRestSiblings: false
-      }
+        ignoreRestSiblings: false,
+      },
     ],
-    '@typescript-eslint/no-object-literal-type-assertion': 'off'
+    '@typescript-eslint/no-object-literal-type-assertion': 'off',
   },
   overrides: [
     {
@@ -53,7 +53,7 @@ module.exports = {
         // They're great for debugging, but thats it.
         'jest/no-focused-tests': 'error',
         'jest/no-disabled-tests': 'warn',
-      }
-    }
-  ]
+      },
+    },
+  ],
 };

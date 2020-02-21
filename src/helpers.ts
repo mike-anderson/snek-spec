@@ -1,10 +1,4 @@
-import {
-  Directions,
-  IBoard,
-  ICoordinate,
-  ISnake,
-  Matrix
-} from './Types';
+import { Directions, IBoard, ICoordinate, ISnake, Matrix } from './Types';
 // TODO: fix this import
 import Pathfinder from 'pathfinding';
 
@@ -22,16 +16,16 @@ const NOPE = 1;
  * @param {IBoard} board - the board state
  * @returns {Matrix} - a multidimensional array
  */
-function createGrid(board: IBoard): Matrix {
+export function createGrid(board: IBoard): Matrix {
   let row: number[];
   const grid: Matrix = [];
 
   // Add arrays to the grid until we reach the prescribed height
-  while(grid.length < board.height) {
+  while (grid.length < board.height) {
     row = [];
 
     // Add 0s to each array until we reach the prescribed width
-    while(row.length < board.width) {
+    while (row.length < board.width) {
       row.push(SAFE);
     }
 
@@ -47,16 +41,16 @@ function createGrid(board: IBoard): Matrix {
  * @param {ISnake[]} snakes - the array of sneks to add
  * @returns {Matrix} - a new matrix with unwalkable spaces marked
  */
-function addSnakesToGrid(grid: Matrix, snakes: ISnake[]) {
+export function addSnakesToGrid(grid: Matrix, snakes: ISnake[]): Matrix {
   // Make a copy of the grid to preserve the original
-  const newGrid = [...grid];
+  const newGrid: Matrix = [...grid];
 
   // For each snake, iterate over its segments,
   // marking the coordinates as unwalkable
   snakes.forEach((snake: ISnake): void => {
     snake.body.forEach((segment: ICoordinate): void => {
       newGrid[segment.y][segment.x] = NOPE;
-    })
+    });
   });
 
   return newGrid;
@@ -69,12 +63,15 @@ function addSnakesToGrid(grid: Matrix, snakes: ISnake[]) {
  * @param {ICoordinate} start - the coordinates we are starting at
  * @returns {Directions} - an orthogonal direction
  */
-function coordinatesToDirection(move: ICoordinate, start: ICoordinate): Directions {
+export function coordinatesToDirection(
+  move: ICoordinate,
+  start: ICoordinate
+): Directions {
   // Calculate the difference between start and finish
   const delta: ICoordinate = {
     x: start.x - move.x,
-    y: start.y - move.y
-  }
+    y: start.y - move.y,
+  };
 
   // We should only ever be traversing one node at a time,
   // so if the absolute value of either delta is greater than
@@ -83,15 +80,15 @@ function coordinatesToDirection(move: ICoordinate, start: ICoordinate): Directio
     return null;
   }
 
-  if (delta.x = -1) {
+  if ((delta.x = -1)) {
     return Directions.LEFT;
   }
 
-  if (delta.x = 1) {
+  if ((delta.x = 1)) {
     return Directions.RIGHT;
   }
 
-  if (delta.y = -1) {
+  if ((delta.y = -1)) {
     return Directions.UP;
   }
 
@@ -106,7 +103,11 @@ function coordinatesToDirection(move: ICoordinate, start: ICoordinate): Directio
  * @param {ICoordinate} target - the end coordinates for pathfinding
  * @returns {string} - the direction to move
  */
-function findPath(grid: Matrix, start: ICoordinate, target: ICoordinate) {
+export function findPath(
+  grid: Matrix,
+  start: ICoordinate,
+  target: ICoordinate
+): Matrix | [] {
   // Instantiate the pathfinding grid and A* pathfinder
   const pfGrid = new Pathfinder.Grid(grid);
   const finder = new Pathfinder.AStarFinder();
@@ -140,7 +141,7 @@ function findPath(grid: Matrix, start: ICoordinate, target: ICoordinate) {
  * @param {Matrix} path - paired coordinates, eg. [ [ 1, 2 ], [ 1, 1 ] ]
  * @returns {ICoordinate} - the coordinates to move to
  */
-function getNextMove(path: Matrix) {
+export function getNextMove(path: Matrix): ICoordinate {
   const move: ICoordinate = {
     x: path[0][0],
     y: path[0][1],
