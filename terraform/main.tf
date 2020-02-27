@@ -21,11 +21,17 @@ resource "digitalocean_ssh_key" "bounty_snake_ssh_key" {
 }
 
 resource "digitalocean_droplet" "bounty_snake_droplet" {
-  image    = "ubuntu-18-04-x64"
-  name     = "echosec-bounty-snake"
-  region   = "nyc3"
-  size     = "s-1vcpu-1gb"
-  ssh_keys = [digitalocean_ssh_key.bounty_snake_ssh_key.fingerprint]
+  image     = "docker-18-04"
+  name      = "echosec-bounty-snake"
+  region    = "nyc3"
+  size      = "s-2vcpu-4gb"
+  ssh_keys  = [digitalocean_ssh_key.bounty_snake_ssh_key.fingerprint]
+  user_data = <<EOM
+    #cloud-config
+    runcmd:
+      - docker pull docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:latest
+      - docker run -t -d -p 80:5000 docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020
+    EOM
 }
 
 resource "digitalocean_firewall" "bounty_snake_firewall" {
