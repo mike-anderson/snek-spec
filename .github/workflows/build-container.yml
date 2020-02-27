@@ -11,10 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Publish to Dockerhub
-        uses: elgohr/Publish-Docker-Github-Action@master
+      - name: Publish latest tag to GitHub Packages
+        uses: matootie/github-docker@v2.2.2
         with:
-          name: echosec/bounty-snake-2020
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          tags: 'latest'
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+          imageTag: "latest"
