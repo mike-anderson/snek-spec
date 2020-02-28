@@ -17,6 +17,17 @@ export interface IBoard {
   snakes: ISnake[];
 }
 
+export interface IGame {
+  id: string;
+}
+
+export interface IGameState {
+  game: IGame;
+  turn: number;
+  board: IBoard;
+  you: ISnake;
+}
+
 export type Matrix = number[][];
 
 export enum Directions {
