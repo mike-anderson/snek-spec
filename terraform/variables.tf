@@ -16,5 +16,5 @@ variable "github_token" {
 variable "domain_name" {
   description = "Domain name to point to the IP of our hosted DigitalOcean droplet"
   type        = string
-  default     = "snek.echosec.net"
+  default     = "snek.echosec.io"
 }
