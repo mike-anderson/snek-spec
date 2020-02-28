@@ -18,7 +18,7 @@ provider "digitalocean" {
 resource "digitalocean_droplet" "bounty_snake_droplet" {
   image     = "docker-18-04"
   name      = "echosec-bounty-snake"
-  region    = "nyc3"
+  region    = "sfo2"
   size      = "s-2vcpu-4gb"
   ssh_keys  = [
     25059594 # brandonb@echosec.net

@@ -603,6 +603,7 @@ MigrationBackup/
 # Local .terraform directories
 **/.terraform/*
 **/.terraformrc
+**/.tfvars
 
 # .tfstate files
 *.tfstate
