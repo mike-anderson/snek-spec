@@ -33,4 +33,4 @@ jobs:
         env:
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_API_KEY }}
         with:
-          args: compute droplet-action rebuild ${{ secrets.DIGITALOCEAN_DROPLET_ID }} --image docker-18-04
+          args: compute droplet-action rebuild ${{ secrets.DIGITALOCEAN_DROPLET_ID }} --image docker-18-04 --verbose
