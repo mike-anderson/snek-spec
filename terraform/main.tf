@@ -78,3 +78,8 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 }
+
+resource "digitalocean_floating_ip_assignment" "bounty_snake_ip" {
+  ip_address = var.floating_ip
+  droplet_id = digitalocean_droplet.bounty_snake_droplet.id
+}

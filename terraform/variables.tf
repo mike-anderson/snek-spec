@@ -18,3 +18,9 @@ variable "domain_name" {
   type        = string
   default     = "snek.echosec.io"
 }
+
+variable "floating_ip" {
+  description = "A static IP address to point to our DigitalOcean droplet"
+  type        = string
+  default     = "167.99.25.113"
+}
