@@ -1,0 +1,36 @@
+name: Builds and deploys the container
+
+on:
+  # Trigger the workflow on push but only for the master branch
+  push:
+    branches:
+      - master
+
+jobs:
+  build_image:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get the short SHA of the commit
+        id: vars
+        run: |
+          IMAGE_TAG=$(git rev-parse --short=7 $GITHUB_SHA)
+          echo ::set-output name=image_tag::$IMAGE_TAG
+          echo 'IMAGE_TAG:' $IMAGE_TAG
+      - name: Publish short SHA tag to GitHub Packages
+        uses: matootie/github-docker@v2.2.2
+        with:
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+          imageTag: ${{ steps.vars.outputs.image_tag }}
+      - name: Publish latest tag to GitHub Packages
+        uses: matootie/github-docker@v2.2.2
+        with:
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+          imageTag: "latest"
+      - name: Rebuild DO Droplet to pull latest image
+        if: success()
+        uses: digitalocean/action-doctl@master
+        env:
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_API_KEY }}
+        with:
+          args: compute droplet-action rebuild ${{ secrets.DIGITALOCEAN_DROPLET_ID }} --image docker-18-04
