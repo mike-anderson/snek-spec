@@ -32,11 +32,6 @@ resource "digitalocean_droplet" "bounty_snake_droplet" {
     EOM
 }
 
-resource "digitalocean_domain" "bounty_snake_domain" {
-  name       = var.domain_name
-  ip_address = digitalocean_droplet.bounty_snake_droplet.ipv4_address
-}
-
 resource "digitalocean_firewall" "bounty_snake_firewall" {
   name = "bounty-snake-firewall"
 
