@@ -224,6 +224,7 @@ function getGameStateFromMock(
           name: key,
           health,
           body: untangleSnake(snake),
+          shout: 'boo!',
         })
       ),
     },

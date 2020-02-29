@@ -9,6 +9,7 @@ export const us: ISnake = {
     { x: 7, y: 8 },
     { x: 8, y: 8 },
   ],
+  shout: 'snekking good',
 };
 
 export const gameState = {
@@ -30,6 +31,7 @@ export const gameState = {
           { x: 1, y: 1 },
           { x: 1, y: 2 },
         ],
+        shout: 'boo!',
       },
     ],
   },

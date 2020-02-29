@@ -198,6 +198,7 @@ describe('generate a game state from a scenario', (): void => {
               { x: 2, y: 4 },
               { x: 2, y: 3 },
             ],
+            shout: 'boo!',
           },
           {
             id: 'u',
@@ -211,6 +212,7 @@ describe('generate a game state from a scenario', (): void => {
               { x: 6, y: 9 },
               { x: 5, y: 9 },
             ],
+            shout: 'boo!',
           },
         ],
       },
@@ -225,6 +227,7 @@ describe('generate a game state from a scenario', (): void => {
           { x: 2, y: 4 },
           { x: 2, y: 3 },
         ],
+        shout: 'boo!',
       },
     });
   });
@@ -246,6 +249,7 @@ describe('generate a game state from a scenario', (): void => {
             name: 's',
             health: 90,
             body: [{ x: 4, y: 4 }],
+            shout: 'boo!',
           },
         ],
       },
@@ -254,6 +258,7 @@ describe('generate a game state from a scenario', (): void => {
         name: 's',
         health: 90,
         body: [{ x: 4, y: 4 }],
+        shout: 'boo!',
       },
     });
   });
@@ -278,6 +283,7 @@ describe('generate a game state from a scenario', (): void => {
               { x: 4, y: 4 },
               { x: 4, y: 5 },
             ],
+            shout: 'boo!',
           },
         ],
       },
@@ -289,6 +295,7 @@ describe('generate a game state from a scenario', (): void => {
           { x: 4, y: 4 },
           { x: 4, y: 5 },
         ],
+        shout: 'boo!',
       },
     });
   });
@@ -312,6 +319,7 @@ describe('generate a game state from a scenario', (): void => {
               { x: 4, y: 5 },
               { x: 4, y: 4 },
             ],
+            shout: 'boo!',
           },
         ],
       },
@@ -323,6 +331,7 @@ describe('generate a game state from a scenario', (): void => {
           { x: 4, y: 5 },
           { x: 4, y: 4 },
         ],
+        shout: 'boo!',
       },
     });
   });

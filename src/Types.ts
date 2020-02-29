@@ -8,6 +8,7 @@ export interface ISnake {
   name: string;
   health: number;
   body: ICoordinate[];
+  shout: string;
 }
 
 export interface IBoard {
