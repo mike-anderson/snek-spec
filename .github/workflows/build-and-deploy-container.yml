@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  build_image:
+  build:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -27,10 +27,28 @@ jobs:
         with:
           accessToken: ${{ secrets.GITHUB_TOKEN }}
           imageTag: "latest"
+
+  deploy:
+    runs-on: ubuntu-18.04
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - name: List all Droplets
+        uses: digitalocean/action-doctl@master
+        env:
+          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_API_KEY }}
+        with:
+          args: compute droplet list 'echosec-bounty-snake' > $GITHUB_WORKSPACE/droplets_list.json
+      - name: Set the Droplet ID var
+        id: droplet_id
+        run: |
+          DROPLET_ID=$(cat $GITHUB_WORKSPACE/droplets_list.json | jq --raw-output ".[].id")
+          echo ::set-output name=droplet_id::$DROPLET_ID
+          echo "Droplet ID: " $DROPLET_ID
       - name: Rebuild DO Droplet to pull latest image
         if: success()
         uses: digitalocean/action-doctl@master
         env:
           DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_API_KEY }}
         with:
-          args: compute droplet-action rebuild ${{ secrets.DIGITALOCEAN_DROPLET_ID }} --image docker-18-04 --verbose
+          args: compute droplet-action rebuild ${{ steps.droplet_id.outputs.droplet_id }} --image docker-18-04 --verbose
