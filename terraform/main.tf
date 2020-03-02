@@ -27,9 +27,17 @@ resource "digitalocean_droplet" "bounty_snake_droplet" {
     #cloud-config
     runcmd:
       - docker login docker.pkg.github.com -u ${var.github_username} -p ${var.github_token}
-      - docker pull docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:latest
-      - docker run -t -d -p 80:5000 docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:latest
+      - docker pull docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
+      - docker run -t -d -p 80:5000 --env VERSION=${var.image_tag} --restart=unless-stopped docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
     EOM
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  provisioner "local-exec" {
+    command = "./check_health.sh ${self.ipv4_address}"
+  }
 }
 
 resource "digitalocean_firewall" "bounty_snake_firewall" {
@@ -77,4 +85,8 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
 resource "digitalocean_floating_ip_assignment" "bounty_snake_ip" {
   ip_address = var.floating_ip
   droplet_id = digitalocean_droplet.bounty_snake_droplet.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }

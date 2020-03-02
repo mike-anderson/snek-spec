@@ -13,6 +13,11 @@ variable "github_token" {
   type        = string
 }
 
+variable "image_tag" {
+  description = "The 7-char SHA hash used for the Docker tag"
+  type        = string
+}
+
 variable "domain_name" {
   description = "Domain name to point to the IP of our hosted DigitalOcean droplet"
   type        = string

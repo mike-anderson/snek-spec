@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  build:
+  build_deploy:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -27,28 +27,29 @@ jobs:
         with:
           accessToken: ${{ secrets.GITHUB_TOKEN }}
           imageTag: "latest"
-
-  deploy:
-    runs-on: ubuntu-18.04
-    needs: build
-    steps:
-      - uses: actions/checkout@v2
-      - name: List all Droplets
-        uses: digitalocean/action-doctl@master
-        env:
-          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_API_KEY }}
-        with:
-          args: compute droplet list 'echosec-bounty-snake' > $GITHUB_WORKSPACE/droplets_list.json
-      - name: Set the Droplet ID var
-        id: droplet_id
+      - name: Create tfvars file with variables
         run: |
-          DROPLET_ID=$(cat $GITHUB_WORKSPACE/droplets_list.json | jq --raw-output ".[].id")
-          echo ::set-output name=droplet_id::$DROPLET_ID
-          echo "Droplet ID: " $DROPLET_ID
-      - name: Rebuild DO Droplet to pull latest image
-        if: success()
-        uses: digitalocean/action-doctl@master
-        env:
-          DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_API_KEY }}
+          echo "image_tag = \"${{ steps.vars.outputs.image_tag }}\"" > terraform/terraform.auto.tfvars
+      - name: Terraform Init
+        uses: hashicorp/terraform-github-actions@master
         with:
-          args: compute droplet-action rebuild ${{ steps.droplet_id.outputs.droplet_id }} --image docker-18-04 --verbose
+          tf_actions_version: 0.12.21
+          tf_actions_subcommand: 'init'
+          tf_actions_working_dir: './terraform'
+          tf_actions_comment: false
+          args: '-backend-config="token=${{ secrets.TF_API_TOKEN }}"'
+      - name: Terraform Plan
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 0.12.21
+          tf_actions_subcommand: 'plan'
+          tf_actions_working_dir: './terraform'
+          tf_actions_comment: false
+      - name: Terraform Apply
+        if: success()
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: 0.12.21
+          tf_actions_subcommand: 'apply'
+          tf_actions_working_dir: './terraform'
+          tf_actions_comment: false

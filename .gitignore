@@ -604,6 +604,7 @@ MigrationBackup/
 **/.terraform/*
 **/.terraformrc
 **/.tfvars
+**/*.tfvars
 
 # .tfstate files
 *.tfstate
