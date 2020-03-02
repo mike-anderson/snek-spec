@@ -3,7 +3,6 @@ import express from 'express';
 import logger from 'morgan';
 import {
   fallbackHandler,
-  notFoundHandler,
   genericErrorHandler,
   poweredByHandler,
 } from './handlers';
@@ -62,10 +61,14 @@ app.post('/ping', (request, response) => {
   return response.json({});
 });
 
+app.get('/version', (_, response) => {
+  response.status(200);
+  return response.send(process.env.VERSION || 'undefined');
+});
+
 // --- SNAKE LOGIC GOES ABOVE THIS LINE ---
 
 app.use('*', fallbackHandler);
-app.use(notFoundHandler);
 app.use(genericErrorHandler);
 
 app.listen(app.get('port'), () => {

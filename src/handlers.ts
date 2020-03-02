@@ -10,8 +10,7 @@ const poweredByHandler = (_, res, next): void => {
   next();
 };
 
-const fallbackHandler = (req, res, next): Express.Response => {
-  console.dir(req.baseUrl);
+const fallbackHandler = (req, res, next): Express.Response | void => {
   // Root URL path
   if (req.baseUrl === '') {
     res.status(200);
@@ -34,19 +33,23 @@ const fallbackHandler = (req, res, next): Express.Response => {
   return next(err);
 };
 
-const notFoundHandler = (err, _, res, next): Express.Response => {
-  if (err.status !== 404) {
-    return next(err);
+const genericErrorHandler = (
+  err: CustomError,
+  _,
+  res,
+  next
+): Express.Response | void => {
+  // This will never be called but to satisfy Typescript, we make use of it.
+  if (!err) next();
+
+  if (err.status === 404) {
+    res.status(404);
+    return res.send({
+      status: 404,
+      error: err.message || "These are not the snakes you're looking for",
+    });
   }
 
-  res.status(404);
-  return res.send({
-    status: 404,
-    error: err.message || "These are not the snakes you're looking for",
-  });
-};
-
-const genericErrorHandler = (err, _, res): Express.Response => {
   const { status } = err;
 
   res.status(status);
@@ -56,9 +59,4 @@ const genericErrorHandler = (err, _, res): Express.Response => {
   });
 };
 
-export {
-  fallbackHandler,
-  notFoundHandler,
-  genericErrorHandler,
-  poweredByHandler,
-};
+export { fallbackHandler, genericErrorHandler, poweredByHandler };
