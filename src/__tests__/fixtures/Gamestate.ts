@@ -33,6 +33,13 @@ export const gameState = {
         ],
         shout: 'boo!',
       },
+      {
+        id: 'echosnek-instance-2',
+        name: 'Echosnek5000',
+        health: 50,
+        body: [{ x: 9, y: 8 }],
+        shout: 'snekking good too',
+      },
     ],
   },
   you: us,
