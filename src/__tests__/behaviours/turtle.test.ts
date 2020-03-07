@@ -7,7 +7,7 @@ describe('Shouting', () => {
     // Arrange
     const board: IBoard = gameState.board;
     const us: ISnake = gameState.board.snakes[0];
-    const nextMove: string = Directions.LEFT;
+    const nextMove: string = Directions.RIGHT;
 
     // Act
     const mockShout = turtle(board, us);

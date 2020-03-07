@@ -10,7 +10,7 @@ describe('Chase enemy tail behaviour', () => {
     const snakes: ISnake[] = board.snakes;
     const PF = new Pathfinder(board, snakes);
     const us: ISnake = gameState.board.snakes[0];
-    const expectedDirection: string = Directions.LEFT;
+    const expectedDirection: string = Directions.UP;
 
     // Act
     const actualDirection = chaseEnemyTail(PF, snakes, us);

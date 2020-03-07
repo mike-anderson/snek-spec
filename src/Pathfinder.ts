@@ -37,7 +37,7 @@ export default class Pathfinder {
     try {
       const fullPath: Matrix = this.getFullPath(start, target);
       const nextMove: ICoordinate = this.getNextMove(fullPath);
-      const direction: Directions = this.getDirection(nextMove, start);
+      const direction: Directions = this.getDirection(start, nextMove);
       return direction;
     } catch (e) {
       console.log(e);
@@ -72,6 +72,8 @@ export default class Pathfinder {
 
     // If a path is found, return it
     if (path && path.length) {
+      // The path includes our own head as the first element of the array. We need to remove it.
+      path.shift();
       return path;
     }
 
@@ -133,11 +135,11 @@ export default class Pathfinder {
   /**
    * Convert coordinates to a string of either
    * 'left', 'right', 'up', or 'down'
-   * @param {ICoordinate} move - the coordinates we are moving to
    * @param {ICoordinate} start - the coordinates we are starting at
+   * @param {ICoordinate} move - the coordinates we are moving to
    * @returns {Directions} - an orthogonal direction
    */
-  private getDirection(move: ICoordinate, start: ICoordinate): Directions {
+  public getDirection(start: ICoordinate, move: ICoordinate): Directions {
     if (!move) {
       return null;
     }
@@ -155,19 +157,18 @@ export default class Pathfinder {
       return null;
     }
 
-    if ((delta.x = -1)) {
+    if (delta.x === -1) {
+      return Directions.RIGHT;
+    }
+    if (delta.x === 1) {
       return Directions.LEFT;
     }
 
-    if ((delta.x = 1)) {
-      return Directions.RIGHT;
+    if (delta.y === -1) {
+      return Directions.DOWN;
     }
 
-    if ((delta.y = -1)) {
-      return Directions.UP;
-    }
-
-    return Directions.DOWN;
+    return Directions.UP;
   }
 
   /**
