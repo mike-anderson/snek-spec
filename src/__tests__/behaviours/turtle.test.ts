@@ -2,7 +2,7 @@ import { ISnake, IBoard, Directions } from '../../Types';
 import { turtle } from '../../behaviours/turtle';
 import { gameState } from '../fixtures/Gamestate';
 
-describe('Shouting', () => {
+describe('Turtling', () => {
   test('should cause our snake to self-destruct', () => {
     // Arrange
     const board: IBoard = gameState.board;
@@ -12,6 +12,7 @@ describe('Shouting', () => {
     // Act
     const mockShout = turtle(board, us);
 
+    // Assert
     expect(mockShout).toBe(nextMove);
   });
 });

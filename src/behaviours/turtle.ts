@@ -6,7 +6,7 @@ import Pathfinder from '../Pathfinder';
  *
  * @param {IBoard} board - the board state
  * @param {ISnake} us - our snake
- * @returns {Directions} returns the next direction
+ * @returns {Directions} - returns the next direction
  */
 export const turtle = (board: IBoard, us: ISnake): Directions => {
   const snakes: ISnake[] = board.snakes;
@@ -17,5 +17,3 @@ export const turtle = (board: IBoard, us: ISnake): Directions => {
 
   return pf.getStep(head, neck);
 };
-
-export default turtle;
