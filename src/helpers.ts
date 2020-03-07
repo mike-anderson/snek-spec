@@ -66,3 +66,12 @@ export function firstToFood(
   // If no snake has a shorter path, return true
   return true;
 }
+
+/**
+ * Calculate the manhattan distance between to coordinates
+ * @param {ICoordinate} a - coordinate a
+ * @param {ICoordinate} b - coordinate b
+ */
+export function manhattanDistance(a: ICoordinate, b: ICoordinate): number {
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
