@@ -29,7 +29,7 @@ app.post('/start', (request, response) => {
 
   // Response data
   const data = {
-    color: '#DFFF00',
+    color: Math.round(Math.random()) === 1 ? '#1A2F4B' : '#EB7963',
   };
 
   return response.json(data);
