@@ -12,6 +12,16 @@ export function getNemesis(us: ISnake, snakes: ISnake[]): ISnake {
 }
 
 /**
+ * Get our partners in crime from the array of snakes
+ * @param {ISnake} us - this instance of Echosnek
+ * @param {ISnake[]} snakes - all the snakes
+ */
+export function getPartners(us: ISnake, snakes: ISnake[]): ISnake[] {
+  // There should only ever be 1 snake that has a different name
+  return snakes.filter(snake => snake.name === us.name && snake.id !== us.id);
+}
+
+/**
  * Are we currently equal in length or longer than the enemy?
  * @param {ISnake} us - this instance of Echosnek
  * @param {ISnake[]} snakes - all the snakes

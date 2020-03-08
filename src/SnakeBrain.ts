@@ -2,6 +2,7 @@ import { IGameState, ISnake, IBoard, IGame, Directions } from './Types';
 import { turtle } from './behaviours/turtle';
 import {
   canKillNemesis,
+  getPartners,
   getNemesis,
   shouldChaseOurTail,
   firstToFood,
@@ -12,6 +13,7 @@ import { chaseEnemyTail } from './behaviours/chaseEnemyTail';
 import Pathfinder from './Pathfinder';
 import { floodFill } from './behaviours/floodFill';
 import seekSafestFood from './behaviours/seekSafestFood';
+import { collaborate } from './collaborate';
 
 // I hate writing "this." all the time.
 let game: IGame;
@@ -19,6 +21,7 @@ let turn: number;
 let board: IBoard;
 let selfDestruct: boolean;
 let us: ISnake;
+let partners: ISnake[];
 let nemesis: ISnake;
 let everybody: ISnake[];
 
@@ -34,6 +37,7 @@ export default class SnakeBrain {
     selfDestruct = exploited;
     us = gameStateResponse.you;
     everybody = board.snakes;
+    partners = getPartners(us, everybody);
     nemesis = getNemesis(us, everybody);
   }
 
@@ -44,7 +48,6 @@ export default class SnakeBrain {
    */
   public decide(): SnakeBrain {
     // Logic for start of game.
-    // eslint-disable-next-line array-element-newline
     console.log({ turn, game, board, us });
 
     // Instantiate Pathfinder with board and snakes
@@ -52,9 +55,21 @@ export default class SnakeBrain {
 
     // Try some moves out, see what feels good
     const cower = turtle(PF, us);
-    const headbutt = attackHead(PF, us, nemesis);
+    const headbutt = collaborate(
+      attackHead,
+      [PF, us, nemesis],
+      new Pathfinder(board, everybody),
+      us,
+      partners
+    );
     const goingInCircles = chaseTail(PF, us);
-    const hangry = seekSafestFood(PF, board, us);
+    const hangry = collaborate(
+      seekSafestFood,
+      [PF, board, us],
+      new Pathfinder(board, everybody),
+      us,
+      partners
+    );
     const ridingCoattails = chaseEnemyTail(PF, us, everybody);
 
     if (selfDestruct) {

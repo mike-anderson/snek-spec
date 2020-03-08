@@ -31,6 +31,7 @@ module.exports = {
 
     // note you must disable the base rule as it can report incorrect errors
     'no-unused-vars': 'off',
+    'array-element-newline': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {

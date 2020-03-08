@@ -37,3 +37,6 @@ export enum Directions {
   UP = 'up',
   DOWN = 'down',
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Behavior = (...args: any[]) => Directions;
