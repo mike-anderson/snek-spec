@@ -57,16 +57,14 @@ export default class SnakeBrain {
     const cower = turtle(PF, us);
     const headbutt = collaborate(
       attackHead,
-      [PF, us, nemesis],
-      new Pathfinder(board, everybody),
+      [new Pathfinder(board, everybody), us, nemesis],
       us,
       partners
     );
     const goingInCircles = chaseTail(PF, us);
     const hangry = collaborate(
       seekSafestFood,
-      [PF, board, us],
-      new Pathfinder(board, everybody),
+      [new Pathfinder(board, everybody), board, us],
       us,
       partners
     );

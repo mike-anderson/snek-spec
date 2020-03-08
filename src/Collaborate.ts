@@ -4,17 +4,15 @@ import Pathfinder from './Pathfinder';
 export function collaborate(
   action: Behavior, // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actionArguments: Array<any>,
-  pathfinder: Pathfinder,
   us: ISnake,
   partners: ISnake[]
 ): Directions {
-  const collaborateArguments = actionArguments.map(arg =>
-    arg instanceof Pathfinder ? pathfinder : arg
-  );
+  const pathfinder = actionArguments.find(arg => arg instanceof Pathfinder);
+  partners = partners
+    .sort((s1, s2) => (s1.id > s2.id ? 1 : -1))
+    .filter(s1 => s1.id < us.id);
   partners.forEach(snake => {
-    const snakeArgs = collaborateArguments.map(arg =>
-      arg === us ? snake : arg
-    );
+    const snakeArgs = actionArguments.map(arg => (arg === us ? snake : arg));
     const direction = action(...snakeArgs);
     const nonWalkableCoordinate = snake.body[0];
     switch (direction) {
@@ -29,5 +27,5 @@ export function collaborate(
     }
     pathfinder.grid[nonWalkableCoordinate.x][nonWalkableCoordinate.y] = 1;
   });
-  return action(...collaborateArguments);
+  return action(...actionArguments);
 }
