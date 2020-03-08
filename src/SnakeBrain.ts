@@ -13,7 +13,7 @@ import { chaseEnemyTail } from './behaviours/chaseEnemyTail';
 import Pathfinder from './Pathfinder';
 import { floodFill } from './behaviours/floodFill';
 import seekSafestFood from './behaviours/seekSafestFood';
-import { collaborate } from './collaborate';
+import { collaborate } from './Collaborate';
 
 // I hate writing "this." all the time.
 let game: IGame;
