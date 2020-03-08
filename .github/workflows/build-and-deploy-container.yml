@@ -62,8 +62,13 @@ jobs:
             {
               "attachments": [{
                 "color": "good",
-                "title": ":white_check_mark: Successful deploy",
-                "text": "Version ${{ steps.vars.outputs.image_tag }} :tada:",
+                "title": "Successful deploy",
+                "text": "Deployed version ${{ steps.vars.outputs.image_tag }}  :tada:",
+                "fields": [{
+                  "title": "See it running live",
+                  "value": "http://snek.echosec.io/version",
+                  "short": false
+                }]
                 "fallback": "Successfully deployed version ${{ steps.vars.outputs.image_tag }} :tada:"
               }]
             }
