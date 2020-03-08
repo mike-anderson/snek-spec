@@ -12,11 +12,11 @@ do
     echo "$(date -u) Server available"
     exit 0
   else
-    if [ $fail_count -eq 11 ]; then
+    if [ $fail_count -eq 21 ]; then
       echo "$(date -u) Server unavailable"
       exit 2
     else
-      echo "$(date -u) Attempt ${fail_count}/10: Server not yet available"
+      echo "$(date -u) Attempt ${fail_count}/20: Server not yet available"
       sleep 10
       fail_count=$[$fail_count +1]
     fi

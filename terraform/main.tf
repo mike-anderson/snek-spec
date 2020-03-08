@@ -21,15 +21,13 @@ resource "digitalocean_droplet" "bounty_snake_droplet" {
   region      = "sfo2"
   size        = "s-2vcpu-4gb"
   monitoring  = true
-  ssh_keys    = [
-    25059594 # brandonb@echosec.net
-  ]
+  ssh_keys    = var.ssh_key_ids
   user_data   = <<EOM
     #cloud-config
     runcmd:
       - docker login docker.pkg.github.com -u ${var.github_username} -p ${var.github_token}
       - docker pull docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
-      - docker run -t -d -p 80:5000 --env VERSION=${var.image_tag} --restart=unless-stopped docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
+      - docker run -t -d -p 80:5000 --env VERSION=${var.image_tag} --env REDIS_HOST=${digitalocean_droplet.bounty_snake_redis.ipv4_address} --restart=unless-stopped docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
     EOM
 
   lifecycle {
@@ -41,10 +39,45 @@ resource "digitalocean_droplet" "bounty_snake_droplet" {
   }
 }
 
+resource "digitalocean_droplet" "bounty_snake_redis" {
+  image               = "ubuntu-18-04-x64"
+  name                = "echosec-bounty-snake-redis"
+  region              = "sfo2"
+  size                = "s-1vcpu-1gb"
+  monitoring          = true
+  ssh_keys            = var.ssh_key_ids
+  user_data           = <<EOM
+    #cloud-config
+    runcmd:
+      - sudo apt-get update -y
+      - sudo apt-get install -y redis-server
+      - sed -i -e '/supervised/s|no|systemd|' /etc/redis/redis.conf
+      - sed -i -e '/bind 127.0.0.1 ::1/s|127.0.0.1 ::1|0.0.0.0|' /etc/redis/redis.conf
+      - sudo systemctl restart redis.service
+    EOM
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
+resource "digitalocean_floating_ip_assignment" "bounty_snake_ip" {
+  ip_address = var.floating_ip
+  droplet_id = digitalocean_droplet.bounty_snake_droplet.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "digitalocean_firewall" "bounty_snake_firewall" {
   name = "bounty-snake-firewall"
 
-  droplet_ids = [digitalocean_droplet.bounty_snake_droplet.id]
+  droplet_ids = [
+    digitalocean_droplet.bounty_snake_droplet.id,
+    digitalocean_droplet.bounty_snake_redis.id
+  ]
 
   inbound_rule {
     protocol         = "tcp"
@@ -62,6 +95,14 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
     protocol         = "tcp"
     port_range       = "443"
     source_addresses = ["0.0.0.0/0", "::/0"]
+  }
+
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "6379"
+    source_droplet_ids = [
+      digitalocean_droplet.bounty_snake_droplet.id
+    ]
   }
 
   outbound_rule {
@@ -87,13 +128,13 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
     port_range            = "443"
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
-}
 
-resource "digitalocean_floating_ip_assignment" "bounty_snake_ip" {
-  ip_address = var.floating_ip
-  droplet_id = digitalocean_droplet.bounty_snake_droplet.id
 
-  lifecycle {
-    create_before_destroy = true
+  outbound_rule {
+    protocol              = "tcp"
+    port_range            = "6379"
+    destination_droplet_ids = [
+      digitalocean_droplet.bounty_snake_redis.id
+    ]
   }
 }

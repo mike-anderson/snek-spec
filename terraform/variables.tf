@@ -29,3 +29,11 @@ variable "floating_ip" {
   type        = string
   default     = "167.99.25.113"
 }
+
+variable "ssh_key_ids" {
+  description = "A list of SSH key IDs from DigitalOcean to allow SSH access to a droplet"
+  type        = list(string)
+  default     = [
+    25059594 # brandonb@echosec.net
+  ]
+}
