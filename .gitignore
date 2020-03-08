@@ -185,6 +185,9 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+# Redis dump
+dump.rdb
+
 ### OSX ###
 # General
 .DS_Store

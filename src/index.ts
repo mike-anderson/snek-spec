@@ -6,7 +6,22 @@ import {
   genericErrorHandler,
   poweredByHandler,
 } from './handlers';
-import SnakeBrain from './SnakeBrain';
+import { getNemesis } from './helpers';
+import SnakeBrain from '../src/SnakeBrain';
+import { IGameState } from '../src/Types';
+import redis from 'redis';
+
+const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const client = redis.createClient(REDIS_PORT, REDIS_HOST);
+
+client.on('connect', () => {
+  console.log('Redis connected');
+});
+
+client.on('error', err => {
+  console.error(err);
+});
 
 const app = express();
 
@@ -19,13 +34,26 @@ app.enable('verbose errors');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(poweredByHandler);
+const urlencodedParser = bodyParser.urlencoded({ extended: true });
+
+// Not sure if this is the best idea! 👀
+let giveUp = false;
 
 // --- SNAKE LOGIC GOES BELOW THIS LINE ---
 
 // Handle POST request to '/start'
 app.post('/start', (request, response) => {
-  // NOTE: Do something here to start the game
-  console.log(request.body);
+  // Reset giveUp whenever a new game starts
+  giveUp = false;
+
+  // Let's see who we're dealing with.
+  const gameState: IGameState = request.body;
+  const enemy = getNemesis(gameState.you, gameState.board.snakes);
+
+  // That's it! You're on the list.
+  client.smembers('enemyNames', (err, reply) => {
+    giveUp = reply.includes(enemy.name);
+  });
 
   // Response data
   const data = {
@@ -37,9 +65,9 @@ app.post('/start', (request, response) => {
 
 // Handle POST request to '/move'
 app.post('/move', (request, response) => {
-  // NOTE: Do something here to generate your move
-  const currentGameState = request.body;
-  const brain = new SnakeBrain(currentGameState, false);
+  // Pass current game state and whether it's quittin time
+  const currentGameState: IGameState = request.body;
+  const brain = new SnakeBrain(currentGameState, giveUp);
 
   brain.decide();
 
@@ -69,6 +97,18 @@ app.post('/ping', (request, response) => {
 app.get('/version', (_, response) => {
   response.status(200);
   return response.send(process.env.VERSION || 'undefined');
+});
+
+app.post('/enemy', urlencodedParser, (request, response) => {
+  let data = "Didn't quite get that. Come again?";
+
+  // Parse curl for enemy name, add it to redis
+  if (request.body.name) {
+    client.sadd('enemyNames', request.body.name);
+    data = 'Turtle cower! 🐢 🐢 🐢 ';
+  }
+
+  return response.json(data);
 });
 
 // --- SNAKE LOGIC GOES ABOVE THIS LINE ---
