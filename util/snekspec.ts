@@ -196,12 +196,12 @@ function getGameStateFromMock(
   }
 ): IGameState {
   const { height, width, you, health, turn } = {
-    ...options,
     height: 11,
     width: 11,
     you: 's',
     health: 90,
     turn: 1,
+    ...options,
   };
   const candidateBoard = candidateSnakesAndFoodFromMock(mock, height, width);
   Object.keys(candidateBoard.snakes).forEach(key => {

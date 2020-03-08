@@ -13,7 +13,7 @@ describe('Chase enemy tail behaviour', () => {
     const expectedDirection: string = Directions.UP;
 
     // Act
-    const actualDirection = chaseEnemyTail(PF, snakes, us);
+    const actualDirection = chaseEnemyTail(PF, us, snakes);
 
     expect(actualDirection).toBe(expectedDirection);
   });

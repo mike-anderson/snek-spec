@@ -18,7 +18,7 @@ export function getNemesis(us: ISnake, snakes: ISnake[]): ISnake {
  */
 export function canKillNemesis(us: ISnake, snakes: ISnake[]): boolean {
   const nemesis: ISnake = getNemesis(us, snakes);
-  return us.body.length >= nemesis.body.length;
+  return nemesis && us.body.length >= nemesis.body.length;
 }
 
 /**
@@ -35,18 +35,18 @@ export function getOtherSnakes(us: ISnake, snakes: ISnake[]): ISnake[] {
  * @param {ISnake} us - this instance of Echosnek
  * @param {ISnake[]} snakes - all the snakes
  * @param {ICoordinate} food - the food in question
- * @param {Pathfinder} pf - the Pathinder instance
+ * @param {Pathfinder} PF - the Pathinder instance
  * @returns {boolean} - are we?
  */
 export function firstToFood(
   us: ISnake,
   snakes: ISnake[],
   food: ICoordinate,
-  pf: Pathfinder
+  PF: Pathfinder
 ): boolean {
   const ourHead: ICoordinate = us.body[0];
   const otherSneks: ISnake[] = getOtherSnakes(us, snakes);
-  const ourPath: Matrix = pf.getFullPath(ourHead, food);
+  const ourPath: Matrix = PF.getFullPath(ourHead, food);
 
   if (!ourPath) {
     return;
@@ -56,7 +56,7 @@ export function firstToFood(
   // check if they have a shorter path, returning false
   // if they do
   for (const snek of otherSneks) {
-    const enemyPath: Matrix = pf.getFullPath(snek.body[0], food);
+    const enemyPath: Matrix = PF.getFullPath(snek.body[0], food);
 
     if (enemyPath && enemyPath.length < ourPath.length) {
       return false;
@@ -74,6 +74,17 @@ export function firstToFood(
  */
 export function manhattanDistance(a: ICoordinate, b: ICoordinate): number {
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+/**
+ * Should we chase our own tail?
+ * Not if we're just gonna turn around and
+ * whack right into it like an idiot.
+ * @param us - we are just one snake
+ * @param turn - are we done yet?
+ */
+export function shouldChaseOurTail(us: ISnake, turn: number): boolean {
+  return us.body.length > 2 && turn > 3;
 }
 
 /**

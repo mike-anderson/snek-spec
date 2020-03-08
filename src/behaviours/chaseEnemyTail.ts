@@ -10,14 +10,18 @@ import { manhattanDistance, getOtherSnakes } from '../helpers';
  */
 export const chaseEnemyTail = (
   PF: Pathfinder,
-  snakes: ISnake[],
-  us: ISnake
+  us: ISnake,
+  snakes: ISnake[]
 ): Directions => {
-  const tails: ICoordinate[] = getOtherSnakes(us, snakes).map(
-    (snake: ISnake) => {
-      return snake.body[snake.body.length - 1];
-    }
-  );
+  const others = getOtherSnakes(us, snakes);
+
+  if (others.length === 0) {
+    return null;
+  }
+
+  const tails: ICoordinate[] = others.map((snake: ISnake) => {
+    return snake.body[snake.body.length - 1];
+  });
 
   const head: ICoordinate = us.body[0];
   let enemyTail = tails[0];

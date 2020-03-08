@@ -18,7 +18,7 @@ const NOPE = 1;
  *  and the game state for use in debugging
  */
 export default class Pathfinder {
-  private grid: Matrix;
+  public grid: Matrix;
 
   public constructor(board: IBoard, snakes: ISnake[]) {
     // Create a representation of the board for use in pathfinding
@@ -53,12 +53,12 @@ export default class Pathfinder {
    */
   public getFullPath(start: ICoordinate, target: ICoordinate): Matrix | [] {
     // Instantiate the pathfinding grid and A* pathfinder
-    const pfGrid = new PF.Grid(this.grid);
+    const PFGrid = new PF.Grid(this.grid);
     const finder = new PF.AStarFinder();
     // Set our head and target as walkable, because if they
     // are part of a snake's body, they will be unwalkable by default
-    pfGrid.setWalkableAt(start.x, start.y, true);
-    pfGrid.setWalkableAt(target.x, target.y, true);
+    PFGrid.setWalkableAt(start.x, start.y, true);
+    PFGrid.setWalkableAt(target.x, target.y, true);
 
     // finder.findPath returns a matrix of paired coordinate values
     // eg. [ [ 1, 2 ], [ 1, 1 ], [ 2, 1 ], [ 3, 1 ], [ 3, 2 ] ]
@@ -67,7 +67,7 @@ export default class Pathfinder {
       start.y,
       target.x,
       target.y,
-      pfGrid
+      PFGrid
     );
 
     // If a path is found, return it
