@@ -17,7 +17,7 @@ do
       exit 2
     else
       echo "$(date -u) Attempt ${fail_count}/10: Server not yet available"
-      sleep 3
+      sleep 10
       fail_count=$[$fail_count +1]
     fi
   fi
