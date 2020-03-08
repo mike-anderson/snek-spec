@@ -1,5 +1,5 @@
-import { ISnake, Directions, ICoordinate } from '../Types';
 import Pathfinder from '../Pathfinder';
+import { ISnake, Directions, ICoordinate } from '../Types';
 
 /**
  * Snek attack!

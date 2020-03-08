@@ -2,6 +2,15 @@ import { ICoordinate, ISnake, Matrix } from './Types';
 import Pathfinder from './Pathfinder';
 
 /**
+ * Calculate the manhattan distance between two coordinates
+ * @param {ICoordinate} a - coordinate a
+ * @param {ICoordinate} b - coordinate b
+ */
+export function manhattanDistance(a: ICoordinate, b: ICoordinate): number {
+  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+/**
  * Get our enemy from the array of snakes
  * @param {ISnake} us - this instance of Echosnek
  * @param {ISnake[]} snakes - all the snakes
@@ -12,13 +21,27 @@ export function getNemesis(us: ISnake, snakes: ISnake[]): ISnake {
 }
 
 /**
- * Are we currently equal in length or longer than the enemy?
+ * Are we currently longer than the enemy?
  * @param {ISnake} us - this instance of Echosnek
  * @param {ISnake[]} snakes - all the snakes
  */
-export function canKillNemesis(us: ISnake, snakes: ISnake[]): boolean {
+export function canKillNemesis(us: ISnake, nemesis: ISnake): boolean {
+  return nemesis && us.body.length > nemesis.body.length;
+}
+
+/**
+ * We only want to attack the enemy if we are longer than it and we
+ * are more than one space away (otherwise we'll run into its neck)
+ * @param {ISnake} us - this instance of Echosnek
+ * @param {ISnake[]} snakes - the snake we don't like
+ */
+export function shouldKillNemesis(us: ISnake, snakes: ISnake[]): boolean {
   const nemesis: ISnake = getNemesis(us, snakes);
-  return nemesis && us.body.length >= nemesis.body.length;
+
+  return (
+    canKillNemesis(us, nemesis) &&
+    manhattanDistance(us.body[0], nemesis.body[0]) > 1
+  );
 }
 
 /**
@@ -65,15 +88,6 @@ export function firstToFood(
 
   // If no snake has a shorter path, return true
   return true;
-}
-
-/**
- * Calculate the manhattan distance between to coordinates
- * @param {ICoordinate} a - coordinate a
- * @param {ICoordinate} b - coordinate b
- */
-export function manhattanDistance(a: ICoordinate, b: ICoordinate): number {
-  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
 /**

@@ -14,12 +14,14 @@ describe('getNemesis', () => {
 
 describe('canKillNemesis', () => {
   test('should return true if we are longer than our nemesis', () => {
-    const shouldMurder = helpers.canKillNemesis(us, gameState.board.snakes);
+    const nemesis = helpers.getNemesis(us, gameState.board.snakes);
+    const canMurder = helpers.canKillNemesis(us, nemesis);
 
-    expect(shouldMurder).toBe(true);
+    expect(canMurder).toBe(true);
   });
 
   test('should return false if we are shorter than our nemesis', () => {
+    const nemesis = helpers.getNemesis(us, gameState.board.snakes);
     const bodyDouble = { ...us };
     bodyDouble.body = [
       {
@@ -27,7 +29,28 @@ describe('canKillNemesis', () => {
         y: 0,
       },
     ];
-    const shouldMurder = helpers.canKillNemesis(
+    const canMurder = helpers.canKillNemesis(bodyDouble, nemesis);
+
+    expect(canMurder).toBe(false);
+  });
+});
+
+describe('shouldKillNemesis', () => {
+  test('should return true if we should aim for the head', () => {
+    const shouldMurder = helpers.shouldKillNemesis(us, gameState.board.snakes);
+
+    expect(shouldMurder).toBe(true);
+  });
+
+  test('should return false if we should not attack the head', () => {
+    const bodyDouble = { ...us };
+    bodyDouble.body = [
+      {
+        x: 0,
+        y: 0,
+      },
+    ];
+    const shouldMurder = helpers.shouldKillNemesis(
       bodyDouble,
       gameState.board.snakes
     );

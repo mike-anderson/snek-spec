@@ -1,10 +1,10 @@
 import { IGameState, ISnake, IBoard, IGame, Directions } from './Types';
 import { turtle } from './behaviours/turtle';
 import {
-  canKillNemesis,
   getNemesis,
   shouldChaseOurTail,
   firstToFood,
+  shouldKillNemesis,
 } from './helpers';
 import { attackHead } from './behaviours/attackHead';
 import { chaseTail } from './behaviours/chaseTail';
@@ -61,7 +61,7 @@ export default class SnakeBrain {
       // OH NO! We've been hacked!
       console.log('AHHHHHH');
       this.action = cower;
-    } else if (canKillNemesis(us, everybody) && headbutt) {
+    } else if (shouldKillNemesis(us, everybody) && headbutt) {
       console.log('*THUNK*');
       this.action = headbutt;
     } else if (firstToFood && hangry) {
