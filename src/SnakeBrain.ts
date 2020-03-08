@@ -1,11 +1,17 @@
 import { IGameState, ISnake, IBoard, IGame, Directions } from './Types';
 import { turtle } from './behaviours/turtle';
-import { canKillNemesis, getNemesis, shouldChaseOurTail } from './helpers';
+import {
+  canKillNemesis,
+  getNemesis,
+  shouldChaseOurTail,
+  firstToFood,
+} from './helpers';
 import { attackHead } from './behaviours/attackHead';
 import { chaseTail } from './behaviours/chaseTail';
 import { chaseEnemyTail } from './behaviours/chaseEnemyTail';
 import Pathfinder from './Pathfinder';
 import { floodFill } from './behaviours/floodFill';
+import seekSafestFood from './behaviours/seekSafestFood';
 
 // I hate writing "this." all the time.
 let game: IGame;
@@ -47,8 +53,8 @@ export default class SnakeBrain {
     // Try some moves out, see what feels good
     const cower = turtle(PF, us);
     const headbutt = attackHead(PF, us, nemesis);
-    // const hangry = eat();
     const goingInCircles = chaseTail(PF, us);
+    const hangry = seekSafestFood(PF, board, us);
     const ridingCoattails = chaseEnemyTail(PF, us, everybody);
 
     if (selfDestruct) {
@@ -58,8 +64,9 @@ export default class SnakeBrain {
     } else if (canKillNemesis(us, everybody) && headbutt) {
       console.log('*THUNK*');
       this.action = headbutt;
-      // } else if (firstToFood && hangry) {j
-      //   this.action = hangry;
+    } else if (firstToFood && hangry) {
+      console.log('CHONK');
+      this.action = hangry;
     } else if (goingInCircles && shouldChaseOurTail(us, turn)) {
       console.log('Follow our butt');
       this.action = goingInCircles;

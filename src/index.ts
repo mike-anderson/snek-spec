@@ -6,6 +6,7 @@ import {
   genericErrorHandler,
   poweredByHandler,
 } from './handlers';
+import SnakeBrain from './SnakeBrain';
 
 const app = express();
 
@@ -37,11 +38,15 @@ app.post('/start', (request, response) => {
 // Handle POST request to '/move'
 app.post('/move', (request, response) => {
   // NOTE: Do something here to generate your move
-  console.log(request.body);
+  const currentGameState = request.body;
+  const brain = new SnakeBrain(currentGameState, false);
 
+  brain.decide();
+
+  const direction = brain.act();
   // Response data
   const data = {
-    move: 'up', // one of: ['up','down','left','right']
+    move: direction, // one of: ['up','down','left','right']
   };
 
   return response.json(data);
