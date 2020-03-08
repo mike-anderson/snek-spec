@@ -53,3 +53,36 @@ jobs:
           tf_actions_subcommand: 'apply'
           tf_actions_working_dir: './terraform'
           tf_actions_comment: false
+      - name: Notify in Slack
+        if: success()
+        uses: 8398a7/action-slack@v2.7.0
+        with:
+          status: custom
+          payload: |
+            {
+              "attachments": [{
+                "color": "good",
+                "title": ":white_check_mark: Successful deploy",
+                "text": "Version ${{ steps.vars.outputs.image_tag }} :tada:",
+                "fallback": "Successfully deployed version ${{ steps.vars.outputs.image_tag }} :tada:"
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Notify in Slack
+        if: failure()
+        uses: 8398a7/action-slack@v2.7.0
+        with:
+          status: custom
+          payload: |
+            {
+              "attachments": [{
+                "color": "danger",
+                "title": ":x: Deploy failed",
+                "text": "Version ${{ steps.vars.outputs.image_tag }}",
+                "pretext": "<@UK3246KRD>",
+                "fallback": "Failed to deploy version ${{ steps.vars.outputs.image_tag }}"
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
