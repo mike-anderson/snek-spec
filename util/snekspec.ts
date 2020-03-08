@@ -203,7 +203,11 @@ function getGameStateFromMock(
     turn: 1,
     ...options,
   };
-  const candidateBoard = candidateSnakesAndFoodFromMock(mock, height, width);
+  const candidateBoard = candidateSnakesAndFoodFromMock(
+    mock.replace(/[ \t]/g, ''),
+    height,
+    width
+  );
   Object.keys(candidateBoard.snakes).forEach(key => {
     candidateBoard.snakes[key] = untangleSnake(candidateBoard.snakes[key]);
   });
