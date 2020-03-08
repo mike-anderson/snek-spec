@@ -48,7 +48,7 @@ export default class SnakeBrain {
    */
   public decide(): SnakeBrain {
     // Logic for start of game.
-    console.log({ turn, game, board, us });
+    // console.log({ turn, game, board, us });
 
     // Instantiate Pathfinder with board and snakes
     const PF = new Pathfinder(board, everybody);
@@ -61,33 +61,38 @@ export default class SnakeBrain {
       us,
       partners
     );
-    const goingInCircles = chaseTail(PF, us);
+    const goingInCircles = collaborate(
+      chaseTail,
+      [new Pathfinder(board, everybody), us],
+      us,
+      partners
+    );
     const hangry = collaborate(
       seekSafestFood,
       [new Pathfinder(board, everybody), board, us],
       us,
       partners
     );
-    const ridingCoattails = chaseEnemyTail(PF, us, everybody);
-
+    const ridingCoattails = (): Directions => chaseEnemyTail(PF, us, everybody);
+    let action: Directions;
     if (selfDestruct) {
       // OH NO! We've been hacked!
-      console.log('AHHHHHH');
+      console.log(`${turn} | ${us.id}: AHHHHHH`);
       this.action = cower;
-    } else if (canKillNemesis(us, everybody) && headbutt) {
-      console.log('*THUNK*');
-      this.action = headbutt;
-    } else if (firstToFood && hangry) {
-      console.log('CHONK');
-      this.action = hangry;
-    } else if (goingInCircles && shouldChaseOurTail(us, turn)) {
-      console.log('Follow our butt');
-      this.action = goingInCircles;
-    } else if (ridingCoattails) {
-      console.log('Follow your butt');
-      this.action = ridingCoattails;
+    } else if (canKillNemesis(us, everybody) && (action = headbutt())) {
+      console.log(`${turn} | ${us.id}: *THUNK*`);
+      this.action = action;
+    } else if (firstToFood && (action = hangry())) {
+      console.log(`${turn} | ${us.id}: CHONK`);
+      this.action = action;
+    } else if (shouldChaseOurTail(us, turn) && (action = goingInCircles())) {
+      console.log(`${turn} | ${us.id}: Follow our butt`);
+      this.action = action;
+    } else if ((action = ridingCoattails())) {
+      console.log(`${turn} | ${us.id}: Follow your butt`);
+      this.action = action;
     } else {
-      console.log('Feeling aimless');
+      console.log(`${turn} | ${us.id}: Feeling aimless`);
       // floodFill is costly, so only calculating when we need it
       this.action = PF.getDirection(us.body[0], floodFill(PF.grid, us));
     }

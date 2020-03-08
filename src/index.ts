@@ -25,7 +25,7 @@ app.use(poweredByHandler);
 // Handle POST request to '/start'
 app.post('/start', (request, response) => {
   // NOTE: Do something here to start the game
-  console.log(request.body);
+  // console.log(request.body);
 
   // Response data
   const data = {
@@ -53,14 +53,14 @@ app.post('/move', (request, response) => {
 });
 
 app.post('/end', (request, response) => {
-  console.log(request.body);
-
+  // console.log(request.body);
+  console.log('/end');
   // NOTE: Any cleanup when a game is complete.
   return response.json({});
 });
 
 app.post('/ping', (request, response) => {
-  console.log(request.body);
+  // console.log(request.body);
 
   // Used for checking if this snake is still alive.
   return response.json({});
