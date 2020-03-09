@@ -27,7 +27,7 @@ resource "digitalocean_droplet" "bounty_snake_droplet" {
     runcmd:
       - docker login docker.pkg.github.com -u ${var.github_username} -p ${var.github_token}
       - docker pull docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
-      - docker run -t -d -p 80:5000 --env VERSION=${var.image_tag} --env REDIS_HOST=${digitalocean_droplet.bounty_snake_redis.ipv4_address} --restart=unless-stopped docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
+      - docker run -t -d -p 80:5000 --env VERSION=${var.image_tag} --env REDIS_HOST=${digitalocean_droplet.bounty_snake_redis.ipv4_address} --restart=unless-stopped --log-driver=syslog --log-opt syslog-address=udp://${var.papertrail_url} docker.pkg.github.com/echosec/bounty-snake-2020/bounty-snake-2020:${var.image_tag}
     EOM
 
   lifecycle {

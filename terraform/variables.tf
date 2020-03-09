@@ -37,3 +37,8 @@ variable "ssh_key_ids" {
     25059594 # brandonb@echosec.net
   ]
 }
+
+variable "papertrail_url" {
+  description = "The URL of the Papertrail syslog location"
+  type        = string
+}
