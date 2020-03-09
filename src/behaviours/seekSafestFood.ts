@@ -56,7 +56,7 @@ function canWeGetAway(pathToSnack: Matrix, us: ISnake, board: IBoard): boolean {
 
   // We need to instantiate the Pathfinder,
   // with our snake shifted to its future position
-  const PF = new Pathfinder(futureBoard, futureSnakes);
+  const PF = new Pathfinder(futureBoard, futureSnakes, futureUs);
   // Make sure we have somewhere to go after eating. We will check if there is a snake tail to chase.
   return checkPostNibbleOption(PF, futureUs, futureSnakes);
 }

@@ -1,5 +1,6 @@
 import { Directions, IBoard, ICoordinate, ISnake, Matrix } from './Types';
 import PF = require('pathfinding');
+import { getNemesis, canKillNemesis } from './helpers';
 
 const SAFE = 0;
 const NOPE = 1;
@@ -19,11 +20,13 @@ const NOPE = 1;
  */
 export default class Pathfinder {
   public grid: Matrix;
+  public us: ISnake;
 
-  public constructor(board: IBoard, snakes: ISnake[]) {
+  public constructor(board: IBoard, snakes: ISnake[], you: ISnake) {
     // Create a representation of the board for use in pathfinding
     this.grid = this.createGrid(board);
     this.grid = this.addSnakesToGrid(this.grid, snakes);
+    this.us = you;
   }
 
   /**
@@ -128,6 +131,36 @@ export default class Pathfinder {
         newGrid[segment.y][segment.x] = NOPE;
       });
     });
+
+    // Find our nemesis
+    const nemesis = getNemesis(this.us, snakes);
+
+    if (!nemesis) {
+      return newGrid;
+    }
+
+    // Find out if the nemesis is shorter
+    const nemesisIsShorter = canKillNemesis(this.us, nemesis);
+    // If not, mark the spaces around the enemy's head as unwalkable
+    if (!nemesisIsShorter) {
+      // Find the nemesis' head
+      const head = nemesis.body[0];
+      // Get the spaces around its head
+      const nearTheHead = [
+        newGrid[head.y - 1][head.x],
+        newGrid[head.y + 1][head.x],
+        newGrid[head.y][head.x + 1],
+        newGrid[head.y][head.x - 1],
+      ];
+
+      // For each space around its head,
+      // if it exists on the board, make it unwalkable
+      nearTheHead.forEach(node => {
+        if (node !== undefined) {
+          node === NOPE;
+        }
+      });
+    }
 
     return newGrid;
   }

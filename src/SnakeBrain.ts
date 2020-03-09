@@ -48,7 +48,7 @@ export default class SnakeBrain {
     console.log({ turn, game, board, us });
 
     // Instantiate Pathfinder with board and snakes
-    const PF = new Pathfinder(board, everybody);
+    const PF = new Pathfinder(board, everybody, us);
 
     // Try some moves out, see what feels good
     const cower = turtle(PF, us);

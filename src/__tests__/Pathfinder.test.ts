@@ -2,7 +2,11 @@ import Pathfinder from '../Pathfinder';
 import { gameState, us } from './fixtures/Gamestate';
 import { Directions } from '../Types';
 
-const PF = new Pathfinder(gameState.board, gameState.board.snakes);
+const PF = new Pathfinder(
+  gameState.board,
+  gameState.board.snakes,
+  gameState.you
+);
 
 describe('Pathfinder', () => {
   test('should accept a board and a snake on instantiation', () => {

@@ -2,7 +2,11 @@ import * as helpers from '../helpers';
 import { gameState, us } from './fixtures/Gamestate';
 import Pathfinder from '../Pathfinder';
 
-const PF = new Pathfinder(gameState.board, gameState.board.snakes);
+const PF = new Pathfinder(
+  gameState.board,
+  gameState.board.snakes,
+  gameState.you
+);
 
 describe('getNemesis', () => {
   test('should isolate our enemy from an array', () => {

@@ -8,7 +8,7 @@ describe('Chase tail behaviour', () => {
     // Arrange
     const board: IBoard = gameState.board;
     const snakes: ISnake[] = gameState.board.snakes;
-    const PF: Pathfinder = new Pathfinder(board, snakes);
+    const PF: Pathfinder = new Pathfinder(board, snakes, gameState.you);
     const us: ISnake = gameState.board.snakes[0];
     const expectedDirection: string = Directions.UP;
 

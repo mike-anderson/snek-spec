@@ -9,7 +9,7 @@ describe('Turtling', () => {
     const board: IBoard = gameState.board;
     const us: ISnake = gameState.board.snakes[0];
     const snakes: ISnake[] = board.snakes;
-    const PF = new Pathfinder(board, snakes);
+    const PF = new Pathfinder(board, snakes, gameState.you);
     const nextMove: string = Directions.RIGHT;
 
     // Act

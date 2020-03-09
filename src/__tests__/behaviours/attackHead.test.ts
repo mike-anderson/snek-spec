@@ -12,7 +12,7 @@ describe('Attacking', () => {
     const nextMove: string = Directions.UP;
     const snakes: ISnake[] = board.snakes;
     const nemesis = getNemesis(us, snakes);
-    const PF = new Pathfinder(board, snakes);
+    const PF = new Pathfinder(board, snakes, gameState.you);
 
     // Act
     const mockAttack = attackHead(PF, us, nemesis);

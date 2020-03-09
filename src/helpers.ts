@@ -17,7 +17,8 @@ export function manhattanDistance(a: ICoordinate, b: ICoordinate): number {
  */
 export function getNemesis(us: ISnake, snakes: ISnake[]): ISnake {
   // There should only ever be 1 snake that has a different name
-  if (snakes.length === 1) {
+  // TODO: find out why 'us' doesn't exist in some tests
+  if (snakes.length === 1 || !us) {
     return null;
   }
 
