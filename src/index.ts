@@ -8,7 +8,7 @@ import {
 } from './handlers';
 import { getNemesis } from './helpers';
 import SnakeBrain from '../src/SnakeBrain';
-import { IGameState } from '../src/Types';
+import { IGameState, ISnake } from '../src/Types';
 import redis from 'redis';
 
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
@@ -48,12 +48,14 @@ app.post('/start', (request, response) => {
 
   // Let's see who we're dealing with.
   const gameState: IGameState = request.body;
-  const enemy = getNemesis(gameState.you, gameState.board.snakes);
+  const enemy: ISnake = getNemesis(gameState.you, gameState.board.snakes);
 
-  // That's it! You're on the list.
-  client.smembers('enemyNames', (err, reply) => {
-    giveUp = reply.includes(enemy.name);
-  });
+  if (enemy) {
+    // That's it! You're on the list.
+    client.smembers('enemyNames', (err, reply) => {
+      giveUp = reply.includes(enemy.name);
+    });
+  }
 
   // Response data
   const data = {
@@ -69,12 +71,9 @@ app.post('/move', (request, response) => {
   const currentGameState: IGameState = request.body;
   const brain = new SnakeBrain(currentGameState, giveUp);
 
-  brain.decide();
-
-  const direction = brain.act();
   // Response data
   const data = {
-    move: direction, // one of: ['up','down','left','right']
+    move: brain.decide().act(), // one of: ['up','down','left','right']
   };
 
   return response.json(data);
