@@ -85,7 +85,7 @@ export function firstToFood(
   for (const snek of otherSneks) {
     const enemyPath: Matrix = PF.getFullPath(snek.body[0], food);
 
-    if (enemyPath && enemyPath.length < ourPath.length) {
+    if (enemyPath && enemyPath.length <= ourPath.length) {
       return false;
     }
   }

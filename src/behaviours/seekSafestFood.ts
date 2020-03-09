@@ -79,8 +79,8 @@ export const seekSafestFood = (
     const head: ICoordinate = us.body[0];
     const { food: foodArray } = board;
 
-    let pathToSafestFood: Matrix;
-    let safestFood: ICoordinate;
+    let pathToSafestFood: Matrix = [];
+    let safestFood: ICoordinate = null;
     // For each food item we check:
     // 1. Are we closer than any other snake.
     // 2. After we eat the food do we have a path to another snakes tail (escape route)
@@ -91,7 +91,8 @@ export const seekSafestFood = (
       const noDeadEnds = canWeGetAway(pathToSnack, us, board);
 
       if (
-        (!pathToSafestFood || pathToSnack.length < pathToSafestFood.length) &&
+        (pathToSafestFood.length === 0 ||
+          pathToSnack.length < pathToSafestFood.length) &&
         winnerWinnerChickenDinner &&
         noDeadEnds
       ) {
