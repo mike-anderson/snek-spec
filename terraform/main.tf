@@ -105,6 +105,14 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
     ]
   }
 
+  inbound_rule {
+    protocol         = "udp"
+    port_range       = "25259"
+    source_droplet_ids = [
+      digitalocean_droplet.bounty_snake_droplet.id
+    ]
+  }
+
   outbound_rule {
     protocol              = "tcp"
     port_range            = "53"
