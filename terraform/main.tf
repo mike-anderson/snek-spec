@@ -105,14 +105,6 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
     ]
   }
 
-  inbound_rule {
-    protocol         = "udp"
-    port_range       = "25259"
-    source_droplet_ids = [
-      digitalocean_droplet.bounty_snake_droplet.id
-    ]
-  }
-
   outbound_rule {
     protocol              = "tcp"
     port_range            = "53"
@@ -137,6 +129,11 @@ resource "digitalocean_firewall" "bounty_snake_firewall" {
     destination_addresses = ["0.0.0.0/0", "::/0"]
   }
 
+  outbound_rule {
+    protocol              = "udp"
+    port_range            = "25259"
+    destination_addresses = ["0.0.0.0/0"]
+  }
 
   outbound_rule {
     protocol              = "tcp"
