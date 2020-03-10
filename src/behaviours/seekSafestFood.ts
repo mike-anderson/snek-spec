@@ -6,22 +6,33 @@ import chaseTail from './chaseTail';
 import { logger } from '../logger';
 
 /**
- * To check where our body will be, should we dine.
+ * Go for the food
+ * @param PF - Pathfinder instance
+ * @param us - our snake
+ * @param food - the food to eat
+ */
+function eat(PF: Pathfinder, us: ISnake, food: ICoordinate): Directions {
+  const head: ICoordinate = us.body[0];
+
+  return PF.getStep(head, food);
+}
+
+/**
+ * Are we trapped if we eat this food?
  * @param {Pathfinder} - PF - our pathfinder class.
  * @param {ISnake[]} snakes - dastardly foes.
  * @param {ISnake} futureUs - will i be pretty, will i be rich?
  * @returns {Directions} returns the next direction
  */
-function checkPostNibbleOption(
+function isItADeadEnd(
   PF: Pathfinder,
   futureUs: ISnake,
   snakes: ISnake[]
 ): boolean {
-  logger.debug(futureUs);
   const pathToEnemyTail = chaseEnemyTail(PF, futureUs, snakes);
   const pathToOurTail = chaseTail(PF, futureUs);
 
-  return pathToEnemyTail || pathToOurTail ? true : false;
+  return pathToEnemyTail || pathToOurTail ? false : true;
 }
 
 /**
@@ -34,9 +45,9 @@ function checkPostNibbleOption(
  * @param us - us!
  * @param board - the game board
  */
-function canWeGetAway(pathToSnack: Matrix, us: ISnake, board: IBoard): boolean {
+function areWeTrapped(pathToSnack: Matrix, us: ISnake, board: IBoard): boolean {
   // This is us after we hit our fitness goals
-  const futureBody = [];
+  const futureBody: ICoordinate[] = [];
   // Map where our body will be when we eat food.
   for (const coordinate of pathToSnack) {
     futureBody.push({ x: coordinate[0], y: coordinate[1] });
@@ -46,12 +57,12 @@ function canWeGetAway(pathToSnack: Matrix, us: ISnake, board: IBoard): boolean {
   const indexOfUs = board.snakes.findIndex(snake => snake.id === us.id);
 
   // Predict the future wooooOOOOOooooOOOOOooo
-  const futureUs = { ...us, body: futureBody };
-  const futureSnakes = [...board.snakes];
+  const futureUs: ISnake = { ...us };
+  futureUs.body = futureBody;
+  const futureSnakes: ISnake[] = [...board.snakes];
   futureSnakes[indexOfUs] = futureUs;
-  const futureBoard = {
+  const futureBoard: IBoard = {
     ...board,
-    us: futureUs,
     snakes: futureSnakes,
   };
 
@@ -59,7 +70,7 @@ function canWeGetAway(pathToSnack: Matrix, us: ISnake, board: IBoard): boolean {
   // with our snake shifted to its future position
   const PF = new Pathfinder(futureBoard, futureSnakes, futureUs);
   // Make sure we have somewhere to go after eating. We will check if there is a snake tail to chase.
-  return checkPostNibbleOption(PF, futureUs, futureSnakes);
+  return isItADeadEnd(PF, futureUs, futureSnakes);
 }
 
 /**
@@ -86,24 +97,32 @@ export const seekSafestFood = (
     // 1. Are we closer than any other snake.
     // 2. After we eat the food do we have a path to another snakes tail (escape route)
     // If so, we chonk.
-    foodArray.forEach(snakeSnack => {
-      const winnerWinnerChickenDinner = firstToFood(us, snakes, snakeSnack, PF);
+    for (const snakeSnack of foodArray) {
       const pathToSnack = PF.getFullPath(head, snakeSnack);
-      const noDeadEnds = canWeGetAway(pathToSnack, us, board);
+      // If there's no path to food, continue
+      if (!pathToSnack) {
+        continue;
+      }
+
+      const winnerWinnerChickenDinner = firstToFood(us, snakes, snakeSnack, PF);
+      const deadEnd = areWeTrapped(pathToSnack, us, board);
+
+      // If we won't make it there first, continue
+      if (!winnerWinnerChickenDinner || deadEnd) {
+        continue;
+      }
 
       if (
-        (pathToSafestFood.length === 0 ||
-          pathToSnack.length < pathToSafestFood.length) &&
-        winnerWinnerChickenDinner &&
-        noDeadEnds
+        pathToSafestFood.length === 0 ||
+        pathToSnack.length < pathToSafestFood.length
       ) {
         pathToSafestFood = pathToSnack;
         safestFood = snakeSnack;
       }
-    });
+    }
 
     if (safestFood) {
-      return PF.getStep(head, safestFood);
+      return eat(PF, us, safestFood);
     } else {
       return null;
     }
