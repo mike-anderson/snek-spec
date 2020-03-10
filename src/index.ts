@@ -1,6 +1,6 @@
 import bodyParser from 'body-parser';
 import express from 'express';
-import logger from 'morgan';
+import morgan from 'morgan';
 import {
   fallbackHandler,
   genericErrorHandler,
@@ -11,16 +11,18 @@ import SnakeBrain from '../src/SnakeBrain';
 import { IGameState, ISnake } from '../src/Types';
 import redis from 'redis';
 
+import { logger } from './logger';
+
 const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT = process.env.REDIS_PORT || 6379;
 const client = redis.createClient(REDIS_PORT, REDIS_HOST);
 
 client.on('connect', () => {
-  console.log('Redis connected');
+  logger.info('Redis connected');
 });
 
 client.on('error', err => {
-  console.error(err);
+  logger.error(err);
 });
 
 const app = express();
@@ -31,7 +33,7 @@ app.set('port', process.env.PORT || 9001);
 
 app.enable('verbose errors');
 
-app.use(logger('dev'));
+app.use(morgan('tiny'));
 app.use(bodyParser.json());
 app.use(poweredByHandler);
 const urlencodedParser = bodyParser.urlencoded({ extended: true });
@@ -80,14 +82,14 @@ app.post('/move', (request, response) => {
 });
 
 app.post('/end', (request, response) => {
-  console.log(request.body);
+  logger.debug(request.body);
 
   // NOTE: Any cleanup when a game is complete.
   return response.json({});
 });
 
 app.post('/ping', (request, response) => {
-  console.log(request.body);
+  logger.debug(request.body);
 
   // Used for checking if this snake is still alive.
   return response.json({});
@@ -116,5 +118,5 @@ app.use('*', fallbackHandler);
 app.use(genericErrorHandler);
 
 app.listen(app.get('port'), () => {
-  console.log(`Server listening on port ${app.get('port')}`);
+  logger.info(`Server listening on port ${app.get('port')}`);
 });

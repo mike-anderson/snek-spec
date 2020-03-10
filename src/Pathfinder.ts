@@ -1,6 +1,7 @@
 import { Directions, IBoard, ICoordinate, ISnake, Matrix } from './Types';
 import PF = require('pathfinding');
 import { getNemesis, canKillNemesis } from './helpers';
+import { logger } from './logger';
 
 const SAFE = 0;
 const NOPE = 1;
@@ -43,7 +44,7 @@ export default class Pathfinder {
       const direction: Directions = this.getDirection(start, nextMove);
       return direction;
     } catch (e) {
-      console.log(e);
+      logger.warn(e);
       return null;
     }
   }

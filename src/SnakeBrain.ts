@@ -12,6 +12,7 @@ import { chaseEnemyTail } from './behaviours/chaseEnemyTail';
 import Pathfinder from './Pathfinder';
 import { floodFill } from './behaviours/floodFill';
 import seekSafestFood from './behaviours/seekSafestFood';
+import { logger } from './logger';
 
 // I hate writing "this." all the time.
 let game: IGame;
@@ -45,7 +46,7 @@ export default class SnakeBrain {
   public decide(): SnakeBrain {
     // Logic for start of game.
     // eslint-disable-next-line array-element-newline
-    console.log({ turn, game, board, us });
+    logger.debug({ turn, game, board, us });
 
     // Instantiate Pathfinder with board and snakes
     const PF = new Pathfinder(board, everybody, us);
@@ -59,22 +60,22 @@ export default class SnakeBrain {
 
     if (selfDestruct) {
       // OH NO! We've been hacked!
-      console.log('AHHHHHH');
+      logger.debug('AHHHHHH');
       this.action = cower;
     } else if (shouldKillNemesis(us, everybody) && headbutt) {
-      console.log('*THUNK*');
+      logger.debug('*THUNK*');
       this.action = headbutt;
     } else if (firstToFood && hangry) {
-      console.log('CHONK');
+      logger.debug('CHONK');
       this.action = hangry;
     } else if (goingInCircles && shouldChaseOurTail(us, turn)) {
-      console.log('Follow our butt');
+      logger.debug('Follow our butt');
       this.action = goingInCircles;
     } else if (ridingCoattails) {
-      console.log('Follow your butt');
+      logger.debug('Follow your butt');
       this.action = ridingCoattails;
     } else {
-      console.log('Feeling aimless');
+      logger.debug('Feeling aimless');
       // floodFill is costly, so only calculating when we need it
       this.action = PF.getDirection(us.body[0], floodFill(PF.grid, us));
     }

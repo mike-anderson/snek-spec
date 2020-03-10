@@ -13,6 +13,9 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
 
+    // Use the logger, not console.log
+    'no-console': ['error'],
+
     '@typescript-eslint/explicit-function-return-type': ['error'],
 
     '@typescript-eslint/interface-name-prefix': ['error', 'always'],

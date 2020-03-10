@@ -3,6 +3,7 @@ import Pathfinder from '../Pathfinder';
 import { firstToFood } from '../helpers';
 import { chaseEnemyTail } from './chaseEnemyTail';
 import chaseTail from './chaseTail';
+import { logger } from '../logger';
 
 /**
  * To check where our body will be, should we dine.
@@ -16,7 +17,7 @@ function checkPostNibbleOption(
   futureUs: ISnake,
   snakes: ISnake[]
 ): boolean {
-  console.log(futureUs);
+  logger.debug(futureUs);
   const pathToEnemyTail = chaseEnemyTail(PF, futureUs, snakes);
   const pathToOurTail = chaseTail(PF, futureUs);
 
@@ -107,7 +108,7 @@ export const seekSafestFood = (
       return null;
     }
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 };
 
