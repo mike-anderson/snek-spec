@@ -96,14 +96,32 @@ export function firstToFood(
 }
 
 /**
+ * Did the snake just eat?
+ * @param snake - did this snake just eat?
+ */
+export function theSnakeJustAteAndWeAreCloseToItsButt(
+  us: ISnake,
+  snake: ISnake
+): boolean {
+  const butt = snake.body[snake.body.length - 1];
+  const almostButt = snake.body[snake.body.length - 2];
+  // If the snakes butt and its penultimate segment are in
+  // the same spot, we should not chase its tail
+  return (
+    butt.x === almostButt.x &&
+    butt.y === almostButt.y &&
+    manhattanDistance(us.body[0], butt) === 1
+  );
+}
+
+/**
  * Should we chase our own tail?
  * Not if we're just gonna turn around and
  * whack right into it like an idiot.
  * @param us - we are just one snake
- * @param turn - are we done yet?
  */
-export function shouldChaseOurTail(us: ISnake, turn: number): boolean {
-  return us.body.length > 2 && turn > 3;
+export function shouldChaseOurTail(us: ISnake): boolean {
+  return us.body.length > 2 && !theSnakeJustAteAndWeAreCloseToItsButt(us, us);
 }
 
 /**

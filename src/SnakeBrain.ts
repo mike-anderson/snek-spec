@@ -47,6 +47,7 @@ export default class SnakeBrain {
     const hangry = seekSafestFood(PF, board, us);
     const ridingCoattails = chaseEnemyTail(PF, us, everybody);
 
+    logger.debug(`${turn}`);
     if (selfDestruct) {
       // OH NO! We've been hacked!
       logger.debug('AHHHHHH');
@@ -57,7 +58,7 @@ export default class SnakeBrain {
     } else if (hangry) {
       logger.debug('CHONK');
       this.action = hangry;
-    } else if (shouldChaseOurTail(us, turn) && goingInCircles) {
+    } else if (shouldChaseOurTail(us) && goingInCircles) {
       logger.debug('Follow our butt');
       this.action = goingInCircles;
     } else if (ridingCoattails) {

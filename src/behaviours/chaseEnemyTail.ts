@@ -1,6 +1,10 @@
 import { ISnake, ICoordinate, Directions } from '../Types';
 import Pathfinder from '../Pathfinder';
-import { manhattanDistance, getOtherSnakes } from '../helpers';
+import {
+  manhattanDistance,
+  getOtherSnakes,
+  theSnakeJustAteAndWeAreCloseToItsButt,
+} from '../helpers';
 
 /**
  * @param {Pathfinder} PF - Pathfinder class initialized with game state
@@ -13,7 +17,13 @@ export const chaseEnemyTail = (
   us: ISnake,
   snakes: ISnake[]
 ): Directions => {
-  const others = getOtherSnakes(us, snakes);
+  let others = getOtherSnakes(us, snakes);
+
+  // If we are right next to the enemy's tail, and it just ate,
+  // we should not chase it, or we'll run into it
+  others = others.filter(
+    snake => !theSnakeJustAteAndWeAreCloseToItsButt(us, snake)
+  );
 
   if (others.length === 0) {
     return null;
