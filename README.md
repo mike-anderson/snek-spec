@@ -60,7 +60,7 @@ npm run snek-spec -- yourBoard.txt > gamestate1.json
 Or even test directly against your own snake
 
 ```
-curl -X POST --header "Content-Type: application/json"  -d "$(npm run snek-spec -- yourBoard.txt)" http://yoursnakeserver
+curl -X POST --header "Content-Type: application/json"  -d "$(npm run snek-spec -- yourBoard.txt)" http://yoursnakeserver/move
 ```
 
 ### Call directly in any Typescript project
