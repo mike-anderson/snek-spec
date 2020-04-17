@@ -4,7 +4,7 @@ By Echosec
 
 ## Plain Text Mocks for Battlesnake Game States
 
-Snek-Spec is a tool that generates [Battle Snake](https://play.battlesnake.com/) [Game States](https://docs.battlesnake.com/snake-api#tag/endpoints/paths/~1move/post) from ASCII depictions of the game board. It was developed by the Echosec Bounty Snake team to support test driven development of snake behaviors. We were able to rapidly develop and verify new behaviors by [mocking](https://circleci.com/blog/how-to-test-software-part-i-mocking-stubbing-and-contract-testing/) specific requests that would normally come from the battlesnake arena. It also helped us realize when changes to our code changed the snake behaviour in unexpected ways.
+Snek-Spec is a tool that generates [Battle Snake](https://play.battlesnake.com/) [Game States](https://docs.battlesnake.com/snake-api#tag/endpoints/paths/~1move/post) from plain text depictions of the game board. It was developed by the Echosec Bounty Snake team to support test driven development of snake behaviors. We were able to rapidly develop and verify new behaviors by [mocking](https://circleci.com/blog/how-to-test-software-part-i-mocking-stubbing-and-contract-testing/) specific requests that would normally come from the battlesnake arena. It also helped us realize when changes to our code changed the snake behaviour in unexpected ways.
 
 We found it helpful and hopefully you do too.
 
@@ -48,7 +48,7 @@ npm install
 ### Run as a command
 
 ```
-npm run snek-spec yourBoard.txt
+npm run snek-spec -- yourBoard.txt
 ```
 
 Save game states to files
