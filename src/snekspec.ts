@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { ICoordinate, IGameState, ISnake } from '../src/Types';
+import { ICoordinate, IGameState, ISnake } from './Types';
 
 interface ISnakesAndFood {
   snakes: Record<string, Array<ICoordinate>>;

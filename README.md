@@ -1,26 +1,130 @@
-# Echosec Bounty Snake
+# Snek-Spec
 
-## Running the AI locally
+By Echosec
 
-Fork and clone this repo:
+## ASCII Mocks for Battlesnake Game States
 
-```shell
-git clone git@github.com:echosec/bounty-snake-2020.git
-cd bounty-snake-2020
+Snek-Spec is a tool that generates (Battle Snake)[https://play.battlesnake.com/] (Game States)[https://docs.battlesnake.com/snake-api#tag/endpoints/paths/~1move/post] from ASCII depictions of the game board. It was developed by the Echosec Bounty Snake team to support test driven development of snake behaviors. By (mocking)[https://circleci.com/blog/how-to-test-software-part-i-mocking-stubbing-and-contract-testing/] specific requests that would normally come from the battlesnake arena, we were able to rapidly develop and verify new behaviors.
+
+We found it helpful and hopefully you do too.
+
+### GameState Mock
+
+```
+-----------
+---0-------
+-----------
+--T------0-
+--tS-------
+--tt---0---
+-----------
+--------U--
+---0----v--
+-----Vvvv--
+-----------
 ```
 
-Install the client dependencies:
+Open spaces in the game board are represented by `-`'s, food is represented by `0`'s and snakes are represented by letters. Two letters are needed to represent a snake. A snake always begins and ends with capital letter, with the middle segments represented by lower case letters . By default Snek-Spec assumes your snake is the snake starting with `S` (for snake) and ending in `T` (for tail).
 
-```shell
+```
+<- Head Tail ->
+       S     // single segment snake
+      ST     // 2 segment snake
+      StT    // 3 segment snake
+      ...
+     StttT   // 5 segment snake
+```
+
+## How to Use
+
+To run directly from this repo, first clone and install the dependencies, you will need (Node.JS 12.2.0)[https://nodejs.org/en/] or later
+
+```
+git clone https://github.com/mike-anderson/snek-spec.git
+cd snek-spec
 npm install
 ```
 
-Create an `.env` file in the root of the project and add your environment variables (optional).
+### Run as a command
 
-Run the server with auto-reloading on file change:
-
-```shell
-npm start
+```
+npm run snek-spec yourBoard.txt
 ```
 
-Test the client in your browser at <http://localhost:5000>
+Save game states to files
+
+```
+npm run snek-spec -- yourBoard.txt > gamestate1.json
+```
+
+Or even test directly against your own snake
+
+```
+curl -X POST --header "Content-Type: application/json"  -d "$(npm run snek-spec -- yourBoard.txt)" http://yoursnakeserver
+```
+
+### Call directly in any typescript project
+
+If you are writing a snake in typescript, you can include snekspec.ts and call the following function (you can find some examples in snekspec.test.ts):
+
+```
+import { getGameStateFromMock } from 'snekspec';
+const gameState = getGameStateFromMock(yourBoardAsAMultiLineString);
+```
+
+#### Optional Parameters
+
+height: game board height, default=11
+width: game board width, default=11
+you: the letter corresponding to your snake head, default='s'
+health: your health, default=90
+turn: the turn number of the game, default=1
+
+
+### Generated Game State Object
+
+The spec above will generate the following mock battlesnake game state which you can use in place of a `/move` request from the battlesnake API for testing.
+
+```
+      game: {
+        id: 'generated-scenario',
+      },
+      turn: 1,
+      board: {
+        height: 11,
+        width: 11,
+        food: [
+          { x: 3, y: 1 },{ x: 9, y: 3 },{ x: 7, y: 5 },{ x: 3, y: 8 },
+        ],
+        snakes: [
+          {
+            id: 's',
+            name: 's',
+            health: 90,
+            body: [
+              { x: 3, y: 4 },{ x: 3, y: 5 },{ x: 2, y: 5 },{ x: 2, y: 4 },{ x: 2, y: 3 },
+            ],
+            shout: 'boo!',
+          },
+          {
+            id: 'u',
+            name: 'u',
+            health: 90,
+            body: [{ x: 8, y: 7 },{ x: 8, y: 8 },{ x: 8, y: 9 },{ x: 7, y: 9 },{ x: 6, y: 9 },{ x: 5, y: 9 },
+            ],
+            shout: 'boo!',
+          },
+        ],
+      },
+      you: {
+        id: 's',
+        name: 's',
+        health: 90,
+        body: [
+          { x: 3, y: 4 },{ x: 3, y: 5 },{ x: 2, y: 5 },{ x: 2, y: 4 },{ x: 2, y: 3 }
+        ],
+        shout: 'boo!',
+      },
+    });
+  });
+  ```

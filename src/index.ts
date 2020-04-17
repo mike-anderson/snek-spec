@@ -1,122 +1,17 @@
-import bodyParser from 'body-parser';
-import express from 'express';
-import morgan from 'morgan';
-import {
-  fallbackHandler,
-  genericErrorHandler,
-  poweredByHandler,
-} from './handlers';
-import { getNemesis } from './helpers';
-import SnakeBrain from '../src/SnakeBrain';
-import { IGameState, ISnake } from '../src/Types';
-import redis from 'redis';
+import fs from 'fs';
+import { getGameStateFromMock } from './snekspec';
 
-import { logger } from './logger';
+if (process.argv.length < 3) {
+  console.log('you must specify a text file to generate a game state');
+  process.exit(1);
+}
 
-const REDIS_HOST = process.env.REDIS_HOST || 'localhost';
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const client = redis.createClient(REDIS_PORT, REDIS_HOST);
+fs.readFile(process.argv[2], 'utf8', function(err, data) {
+  if (err) throw err;
 
-client.on('connect', () => {
-  logger.info('Redis connected');
+  const gamestate = getGameStateFromMock(data);
+  const gamestateJSON = JSON.stringify(gamestate);
+
+  console.log(gamestateJSON);
 });
 
-client.on('error', err => {
-  logger.error(err);
-});
-
-const app = express();
-
-// For deployment to Heroku, the port needs to be set using ENV, so
-// we check for the port number in process.env
-app.set('port', process.env.PORT || 9001);
-
-app.enable('verbose errors');
-
-app.use(morgan('tiny'));
-app.use(bodyParser.json());
-app.use(poweredByHandler);
-const urlencodedParser = bodyParser.urlencoded({ extended: true });
-
-// Not sure if this is the best idea! 👀
-let giveUp = false;
-
-// --- SNAKE LOGIC GOES BELOW THIS LINE ---
-
-// Handle POST request to '/start'
-app.post('/start', (request, response) => {
-  // Reset giveUp whenever a new game starts
-  giveUp = false;
-
-  // Let's see who we're dealing with.
-  const gameState: IGameState = request.body;
-  const enemy: ISnake = getNemesis(gameState.you, gameState.board.snakes);
-
-  if (enemy) {
-    // That's it! You're on the list.
-    client.smembers('enemyNames', (err, reply) => {
-      giveUp = reply.includes(enemy.name);
-    });
-  }
-
-  // Response data
-  const data = {
-    color: Math.round(Math.random()) === 1 ? '#1A2F4B' : '#EB7963',
-  };
-
-  return response.json(data);
-});
-
-// Handle POST request to '/move'
-app.post('/move', (request, response) => {
-  // Pass current game state and whether it's quittin time
-  const currentGameState: IGameState = request.body;
-  const brain = new SnakeBrain(currentGameState, giveUp);
-
-  // Response data
-  const data = {
-    move: brain.decide().act(), // one of: ['up','down','left','right']
-  };
-
-  return response.json(data);
-});
-
-app.post('/end', (request, response) => {
-  logger.debug(request.body);
-
-  // NOTE: Any cleanup when a game is complete.
-  return response.json({});
-});
-
-app.post('/ping', (request, response) => {
-  logger.debug(request.body);
-
-  // Used for checking if this snake is still alive.
-  return response.json({});
-});
-
-app.get('/version', (_, response) => {
-  response.status(200);
-  return response.send(process.env.VERSION || 'undefined');
-});
-
-app.post('/enemy', urlencodedParser, (request, response) => {
-  let data = "Didn't quite get that. Come again?";
-
-  // Parse curl for enemy name, add it to redis
-  if (request.body.name) {
-    client.sadd('enemyNames', request.body.name);
-    data = 'Turtle cower! 🐢 🐢 🐢 ';
-  }
-
-  return response.json(data);
-});
-
-// --- SNAKE LOGIC GOES ABOVE THIS LINE ---
-
-app.use('*', fallbackHandler);
-app.use(genericErrorHandler);
-
-app.listen(app.get('port'), () => {
-  logger.info(`Server listening on port ${app.get('port')}`);
-});
