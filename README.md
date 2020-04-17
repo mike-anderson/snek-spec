@@ -2,9 +2,9 @@
 
 By Echosec
 
-## ASCII Mocks for Battlesnake Game States
+## Plain Text Mocks for Battlesnake Game States
 
-Snek-Spec is a tool that generates (Battle Snake)[https://play.battlesnake.com/] (Game States)[https://docs.battlesnake.com/snake-api#tag/endpoints/paths/~1move/post] from ASCII depictions of the game board. It was developed by the Echosec Bounty Snake team to support test driven development of snake behaviors. By (mocking)[https://circleci.com/blog/how-to-test-software-part-i-mocking-stubbing-and-contract-testing/] specific requests that would normally come from the battlesnake arena, we were able to rapidly develop and verify new behaviors.
+Snek-Spec is a tool that generates [Battle Snake](https://play.battlesnake.com/) [Game States](https://docs.battlesnake.com/snake-api#tag/endpoints/paths/~1move/post) from ASCII depictions of the game board. It was developed by the Echosec Bounty Snake team to support test driven development of snake behaviors. We were able to rapidly develop and verify new behaviors by [mocking](https://circleci.com/blog/how-to-test-software-part-i-mocking-stubbing-and-contract-testing/) specific requests that would normally come from the battlesnake arena. It also helped us realize when changes to our code changed the snake behaviour in unexpected ways.
 
 We found it helpful and hopefully you do too.
 
@@ -37,7 +37,7 @@ Open spaces in the game board are represented by `-`'s, food is represented by `
 
 ## How to Use
 
-To run directly from this repo, first clone and install the dependencies, you will need (Node.JS 12.2.0)[https://nodejs.org/en/] or later
+To run directly from this repo, first clone and install the dependencies, you will need [Node.JS 12.2.0](https://nodejs.org/en/) or later
 
 ```
 git clone https://github.com/mike-anderson/snek-spec.git
@@ -63,7 +63,7 @@ Or even test directly against your own snake
 curl -X POST --header "Content-Type: application/json"  -d "$(npm run snek-spec -- yourBoard.txt)" http://yoursnakeserver
 ```
 
-### Call directly in any typescript project
+### Call directly in any Typescript project
 
 If you are writing a snake in typescript, you can include snekspec.ts and call the following function (you can find some examples in snekspec.test.ts):
 
@@ -74,12 +74,13 @@ const gameState = getGameStateFromMock(yourBoardAsAMultiLineString);
 
 #### Optional Parameters
 
-height: game board height, default=11
-width: game board width, default=11
-you: the letter corresponding to your snake head, default='s'
-health: your health, default=90
-turn: the turn number of the game, default=1
-
+| Name    | Description                           | Default Value  |
+| ------- |------------------------------------------------- | --- |
+| height  | game board height                                | 11  |
+| width   | game board width                                 | 11  |
+| you     | the letter corresponding to your snake head      | 's' |
+| health  | your health                                      | 90  |
+| turn    | the turn number of the game                      | 1   |
 
 ### Generated Game State Object
 
